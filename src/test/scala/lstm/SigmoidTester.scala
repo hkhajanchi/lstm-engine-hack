@@ -7,7 +7,7 @@ import chisel3.iotesters.{PeekPokeTester, Driver, ChiselFlatSpec}
 import java.io.File
 import math._
 
-class TanhUnitTester(c: Tanh) extends PeekPokeTester(c) {
+class SigmoidUnitTester(c: Sigmoid) extends PeekPokeTester(c) {
 
   val ins   = Array.fill(c.n){0}
   val outs  = Array.fill(c.n){0}
@@ -16,7 +16,7 @@ class TanhUnitTester(c: Tanh) extends PeekPokeTester(c) {
   for (i <- 0 until count) {
     for (i <- 0 until c.n) {
       ins(i)  = rnd.nextInt(1 << c.w) - (1 << (c.w-1))
-      outs(i) = round(math.tanh(ins(i).toDouble)).toInt
+      outs(i) = round(1.0 / (1.0 + math.exp(-(ins(i).toDouble)))).toInt
       poke(c.io.in(i), ins(i))
     }
 
@@ -32,14 +32,14 @@ class TanhUnitTester(c: Tanh) extends PeekPokeTester(c) {
   * This is a trivial example of how to run this Specification
   * From within sbt use:
   * {{{
-  * testOnly lstm.TanhTester
+  * testOnly lstm.SigmoidTester
   * }}}
   * From a terminal shell use:
   * {{{
-  * sbt 'testOnly lstm.TanhTester'
+  * sbt 'testOnly lstm.SigmoidTester'
   * }}}
   */
-class TanhTester extends ChiselFlatSpec {
+class SigmoidTester extends ChiselFlatSpec {
   private val backendNames = if(firrtl.FileUtils.isCommandAvailable(Seq("verilator", "--version"))) {
     Array("firrtl", "verilator")
   }
@@ -48,29 +48,29 @@ class TanhTester extends ChiselFlatSpec {
   }
   for ( backendName <- backendNames ) {
     "Tanh" should s"calculate proper greatest common denominator (with $backendName)" in {
-      Driver(() => new Tanh(8, 8), backendName) {
-        c => new TanhUnitTester(c)
+      Driver(() => new Sigmoid(8,8), backendName) {
+        c => new SigmoidUnitTester(c)
       } should be (true)
     }
   }
 
   "Basic test using Driver.execute" should "be used as an alternative way to run specification" in {
-    iotesters.Driver.execute(Array(), () => new Tanh(8,8)) {
-      c => new TanhUnitTester(c)
+    iotesters.Driver.execute(Array(), () => new Sigmoid(8,8)) {
+      c => new SigmoidUnitTester(c)
     } should be (true)
   }
 
   if(backendNames.contains("verilator")) {
     "using --backend-name verilator" should "be an alternative way to run using verilator" in {
-      iotesters.Driver.execute(Array("--backend-name", "verilator"), () => new Tanh(8,8)) {
-        c => new TanhUnitTester(c)
+      iotesters.Driver.execute(Array("--backend-name", "verilator"), () => new Sigmoid(8,8)) {
+        c => new SigmoidUnitTester(c)
       } should be(true)
     }
   }
 
   "running with --is-verbose" should "show more about what's going on in your tester" in {
-    iotesters.Driver.execute(Array("--is-verbose"), () => new Tanh(8,8)) {
-      c => new TanhUnitTester(c)
+    iotesters.Driver.execute(Array("--is-verbose"), () => new Sigmoid(8,8)) {
+      c => new SigmoidUnitTester(c)
     } should be(true)
   }
 
@@ -82,10 +82,10 @@ class TanhTester extends ChiselFlatSpec {
   "running with --generate-vcd-output on" should "create a vcd file from your test" in {
     iotesters.Driver.execute(
       Array("--generate-vcd-output", "on", "--target-dir", "test_run_dir/make_a_vcd", "--top-name", "make_a_vcd"),
-      () => new Tanh(8,8)
+      () => new Sigmoid(8,8)
     ) {
 
-      c => new TanhUnitTester(c)
+      c => new SigmoidUnitTester(c)
     } should be(true)
 
     new File("test_run_dir/make_a_vcd/Tanh.vcd").exists should be (true)
@@ -95,10 +95,10 @@ class TanhTester extends ChiselFlatSpec {
     iotesters.Driver.execute(
       Array("--generate-vcd-output", "off", "--target-dir", "test_run_dir/make_no_vcd", "--top-name", "make_no_vcd",
       "--backend-name", "verilator"),
-      () => new Tanh(8,8)
+      () => new Sigmoid(8,8)
     ) {
 
-      c => new TanhUnitTester(c)
+      c => new SigmoidUnitTester(c)
     } should be(true)
 
     new File("test_run_dir/make_no_vcd/make_a_vcd.vcd").exists should be (false)

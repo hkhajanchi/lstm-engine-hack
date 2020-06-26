@@ -1,6 +1,6 @@
 BUILDER:=sbt
 
-test: test-relu test-pointmult test-tanh test-pointadd
+test: test-relu test-pointmult test-tanh test-sigmoid test-pointadd
 
 test-pointmult:
 	$(BUILDER) 'testOnly lstm.PointMultTester'
@@ -13,3 +13,6 @@ test-relu:
 
 test-tanh:
 	$(BUILDER) 'testOnly lstm.TanhTester'
+
+test-sigmoid:
+	$(BUILDER) 'testOnly lstm.SigmoidTester'
