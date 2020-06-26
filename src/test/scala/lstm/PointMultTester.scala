@@ -1,29 +1,47 @@
-
 package lstm
 
 import chisel3.iotesters
 import chisel3.iotesters.{PeekPokeTester, Driver, ChiselFlatSpec}
 import java.io.File
 
-class TanhUnitTester(c: Tanh) extends PeekPokeTester(c) {
+class PointMultUnitTester(c: PointMult) extends PeekPokeTester(c) {
 
-  val ins  = Array.fill(c.n){0}
+  val insa = Array.fill(c.n){0}
+  val insb = Array.fill(c.n){0}
   val outs = Array.fill(c.n){0}
 
+  // 10 test iterations
+  for (i <- 0 until 10) {
+
+    // initialize the test vector
+    for (j <- 0 until c.n) {
+      insa(j) = rnd.nextInt((1 << c.w-1) - 1)
+      insb(j) = rnd.nextInt((1 << c.w-1) - 1)
+      outs(j) = insa(j) * insb(j)
+      poke(c.io.ina(j), insa(j))
+      poke(c.io.inb(j), insb(j))
+    }
+
+    step(1)
+
+    for (j <- 0 until c.n) {
+      expect(c.io.out(j), outs(j))
+    }
+  }
 }
 
 /**
   * This is a trivial example of how to run this Specification
   * From within sbt use:
   * {{{
-  * testOnly lstm.ReLuTester
+  * testOnly lstm.PointMultTester
   * }}}
   * From a terminal shell use:
   * {{{
-  * sbt 'testOnly lstm.ReLuTester'
+  * sbt 'testOnly lstm.PointMultTester'
   * }}}
   */
-class TanhTester extends ChiselFlatSpec {
+class PointMultTester extends ChiselFlatSpec {
   private val backendNames = if(firrtl.FileUtils.isCommandAvailable(Seq("verilator", "--version"))) {
     Array("firrtl", "verilator")
   }
@@ -32,29 +50,29 @@ class TanhTester extends ChiselFlatSpec {
   }
   for ( backendName <- backendNames ) {
     "ReLu" should s"calculate proper greatest common denominator (with $backendName)" in {
-      Driver(() => new Tanh(8, 8), backendName) {
-        c => new TanhUnitTester(c)
+      Driver(() => new PointMult(8, 8), backendName) {
+        c => new PointMultUnitTester(c)
       } should be (true)
     }
   }
 
   "Basic test using Driver.execute" should "be used as an alternative way to run specification" in {
-    iotesters.Driver.execute(Array(), () => new Tanh(8,8)) {
-      c => new TanhUnitTester(c)
+    iotesters.Driver.execute(Array(), () => new PointMult(8,8)) {
+      c => new PointMultUnitTester(c)
     } should be (true)
   }
 
   if(backendNames.contains("verilator")) {
     "using --backend-name verilator" should "be an alternative way to run using verilator" in {
-      iotesters.Driver.execute(Array("--backend-name", "verilator"), () => new Tanh(8,8)) {
-        c => new TanhUnitTester(c)
+      iotesters.Driver.execute(Array("--backend-name", "verilator"), () => new PointMult(8,8)) {
+        c => new PointMultUnitTester(c)
       } should be(true)
     }
   }
 
   "running with --is-verbose" should "show more about what's going on in your tester" in {
-    iotesters.Driver.execute(Array("--is-verbose"), () => new Tanh(8,8)) {
-      c => new TanhUnitTester(c)
+    iotesters.Driver.execute(Array("--is-verbose"), () => new PointMult(8,8)) {
+      c => new PointMultUnitTester(c)
     } should be(true)
   }
 
@@ -66,10 +84,10 @@ class TanhTester extends ChiselFlatSpec {
   "running with --generate-vcd-output on" should "create a vcd file from your test" in {
     iotesters.Driver.execute(
       Array("--generate-vcd-output", "on", "--target-dir", "test_run_dir/make_a_vcd", "--top-name", "make_a_vcd"),
-      () => new Tanh(8,8)
+      () => new PointMult(8,8)
     ) {
 
-      c => new TanhUnitTester(c)
+      c => new PointMultUnitTester(c)
     } should be(true)
 
     new File("test_run_dir/make_a_vcd/ReLu.vcd").exists should be (true)
@@ -79,10 +97,10 @@ class TanhTester extends ChiselFlatSpec {
     iotesters.Driver.execute(
       Array("--generate-vcd-output", "off", "--target-dir", "test_run_dir/make_no_vcd", "--top-name", "make_no_vcd",
       "--backend-name", "verilator"),
-      () => new Tanh(8,8)
+      () => new PointMult(8,8)
     ) {
 
-      c => new TanhUnitTester(c)
+      c => new PointMultUnitTester(c)
     } should be(true)
 
     new File("test_run_dir/make_no_vcd/make_a_vcd.vcd").exists should be (false)

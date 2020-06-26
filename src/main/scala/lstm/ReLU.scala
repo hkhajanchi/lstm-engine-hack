@@ -12,7 +12,7 @@ class ReLu(val width: Int, val n:Int) extends Module {
 
   val outreg = Reg(Vec(n, SInt(width.W)))
 
-  (0 until n).map(i => outreg(i) := Mux(io.in(i) >= 0.S, io.in(i), 0.S))
+  (0 until n).foreach(i => outreg(i) := Mux(io.in(i) >= 0.S, io.in(i), 0.S))
 
   io.out := outreg
 }
