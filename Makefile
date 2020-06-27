@@ -1,6 +1,7 @@
 BUILDER:=sbt
+WAVE:=gtkwave
 
-test: test-relu test-pointmult test-tanh test-sigmoid test-pointadd test-fifo
+test: test-pointmult test-pointadd test-relu test-tanh test-sigmoid test-fifo
 
 test-pointmult:
 	$(BUILDER) 'testOnly lstm.PointMultTester'
@@ -20,3 +21,20 @@ test-sigmoid:
 test-fifo:
 	$(BUILDER) 'test:runMain  lstm.fifo.FifoTester'
 
+wave-relu:
+	$(WAVE) test_run_dir/make_a_vcd/ReLu.vcd
+
+wave-tanh:
+	$(WAVE) test_run_dir/make_a_vcd/Tanh.vcd
+
+wave-sigmoid:
+	$(WAVE) test_run_dir/make_a_vcd/Sigmoid.vcd
+
+wave-pointmult:
+	$(WAVE) test_run_dir/make_a_vcd/pointmult.vcd
+
+wave-pointadd:
+	$(WAVE) test_run_dir/make_a_vcd/pointadd.vcd
+
+wave-fifo:
+	$(WAVE) test_run_dir/make_a_vcd/BubbleFifo.vcd
