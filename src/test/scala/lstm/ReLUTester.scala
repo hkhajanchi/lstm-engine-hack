@@ -15,7 +15,7 @@ class ReLuUnitTester(c: ReLu) extends PeekPokeTester(c) {
 
     // initialize the test vector
     for (j <- 0 until c.n) {
-      ins(j)  = rnd.nextInt((1 << c.width-1) - 1)
+      ins(j)  = rnd.nextInt(1 << c.width) - (1 << (c.width-1))
       outs(j) = if (ins(j) >= 0) ins(j) else 0
       poke(c.io.in(j), ins(j))
     }
