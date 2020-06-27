@@ -1,5 +1,6 @@
 BUILDER:=sbt
 WAVE:=gtkwave
+PYTHON:=python3
 
 test: test-pointmult test-pointadd test-relu test-tanh test-sigmoid test-fifo
 
@@ -21,6 +22,10 @@ test-sigmoid:
 test-fifo:
 	$(BUILDER) 'test:runMain  lstm.fifo.FifoTester'
 
+test-frontendrom:
+	$(PYTHON) ./gen_synth_stft_files.py
+	$(BUILDER) 'testOnly lstm.FrontendRomTester'
+
 wave-relu:
 	$(WAVE) test_run_dir/make_a_vcd/ReLu.vcd
 
@@ -38,3 +43,6 @@ wave-pointadd:
 
 wave-fifo:
 	$(WAVE) test_run_dir/make_a_vcd/BubbleFifo.vcd
+
+clean:
+	rm -rf mem*.txt target test_run_dir
