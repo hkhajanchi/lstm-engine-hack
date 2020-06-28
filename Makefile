@@ -2,7 +2,10 @@ BUILDER:=sbt
 WAVE:=gtkwave
 PYTHON:=python3
 
-test: test-pointmult test-pointadd test-relu test-tanh test-sigmoid test-fifo
+test: test-pointmult test-pointadd test-relu test-tanh test-sigmoid test-fifo test-vectorcat
+
+test-vectorcat:
+	$(BUILDER) 'testOnly lstm.VectorCatTester'
 
 test-pointmult:
 	$(BUILDER) 'testOnly lstm.PointMultTester'
@@ -43,6 +46,9 @@ wave-pointadd:
 
 wave-fifo:
 	$(WAVE) test_run_dir/make_a_vcd/BubbleFifo.vcd
+
+wave-vectorcat:
+	$(WAVE) test_run_dir/make_a_vcd/VectorCat.vcd
 
 clean:
 	rm -rf mem*.txt target test_run_dir
