@@ -2,10 +2,20 @@ BUILDER:=sbt
 WAVE:=gtkwave
 PYTHON:=python3
 
-test: test-pointmult test-pointadd test-relu test-tanh test-sigmoid test-fifo test-vectorcat
+test: test-pointmult \
+	  test-pointadd \
+	  test-relu \
+	  test-tanh \
+	  test-sigmoid \
+	  test-fifo \
+	  test-vectorcat \
+	  test-vectorreverse
 
 test-vectorcat:
 	$(BUILDER) 'testOnly lstm.VectorCatTester'
+
+test-vectorreverse:
+	$(BUILDER) 'testOnly lstm.VectorReverseTester'
 
 test-pointmult:
 	$(BUILDER) 'testOnly lstm.PointMultTester'
@@ -49,6 +59,9 @@ wave-fifo:
 
 wave-vectorcat:
 	$(WAVE) test_run_dir/make_a_vcd/VectorCat.vcd
+
+wave-vectorreverse:
+	$(WAVE) test_run_dir/make_a_vcd/VectorReverse.vcd
 
 clean:
 	rm -rf mem*.txt target test_run_dir
