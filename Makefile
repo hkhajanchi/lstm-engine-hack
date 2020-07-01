@@ -9,7 +9,8 @@ test: test-pointmult \
 	  test-sigmoid \
 	  test-fifo \
 	  test-vectorcat \
-	  test-vectorreverse
+	  test-vectorreverse \
+	  test-mac
 
 test-vectorcat:
 	$(BUILDER) 'testOnly lstm.VectorCatTester'
@@ -38,6 +39,9 @@ test-fifo:
 test-frontendrom:
 	$(PYTHON) ./gen_synth_stft_files.py
 	$(BUILDER) 'testOnly lstm.FrontendRomTester'
+
+test-mac:
+	$(BUILDER) 'testOnly lstm.MACTester'
 
 wave-relu:
 	$(WAVE) test_run_dir/make_a_vcd/ReLu.vcd

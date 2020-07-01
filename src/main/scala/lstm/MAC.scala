@@ -1,4 +1,4 @@
-package mac 
+package lstm 
 
 import chisel3._ 
 
@@ -13,7 +13,7 @@ Class Parameters:
     @c:  bitwidth for weight
 */
 
-class MacParam(val a:Int, val b:Int, val c:Int) extends Module {
+class MAC(val a:Int, val b:Int, val c:Int) extends Module {
     
     val io = IO( new Bundle{
 

@@ -6,7 +6,7 @@ import chisel3.iotesters.{PeekPokeTester, Driver, ChiselFlatSpec}
 
 import chisel3.experimental.DataMirror 
 
-class MacParamUnitTester (c:MacParam) extends PeekPokeTester(c) {
+class MACUnitTester (c:MAC) extends PeekPokeTester(c) {
 
     /* Create random signed integers using Scala's nextInt() generator 
     range: -(2^(bitwitdth-1)) to 2^(bitwidth) where a,b,c are the respective operand bitwidths */
@@ -37,14 +37,14 @@ class MacParamUnitTester (c:MacParam) extends PeekPokeTester(c) {
 
 }
 
-class MacParamTester extends ChiselFlatSpec {
+class MACTester extends ChiselFlatSpec {
 
     "Mac Unit" should "multiply & accumulate input ports" in { 
     // def createrandMac : T = {
     //     val x = new MacParam(16,16,16)
     // }
-    iotesters.Driver.execute(Array[String]("--is-verbose", "--generate-vcd-output","on","--target-dir","test/vcd","--top-name","vcd"),() => new MacParam(16,16,16))
+    iotesters.Driver.execute(Array[String]("--is-verbose", "--generate-vcd-output","on","--target-dir","test/vcd","--top-name","vcd"),() => new MAC(16,16,16))
     {
-        c => new MacParamUnitTester(c)
+        c => new MACUnitTester(c)
     } should be(true) }
 }
