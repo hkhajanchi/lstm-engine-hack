@@ -5,6 +5,7 @@ import chisel3.iotesters
 import chisel3.iotesters.{PeekPokeTester, Driver, ChiselFlatSpec}
 
 import chisel3.experimental.DataMirror 
+import chisel3.stage.ChiselStage
 
 class MACUnitTester (c:MAC) extends PeekPokeTester(c) {
 
@@ -12,6 +13,8 @@ class MACUnitTester (c:MAC) extends PeekPokeTester(c) {
     range: -(2^(bitwitdth-1)) to 2^(bitwidth) where a,b,c are the respective operand bitwidths */
 
     def createRandInt(width:Int) : Int = rnd.nextInt(1<<width) - (1<<(width-1))
+
+    println((new ChiselStage).emitVerilog(new MAC(16,16,16)))
     
     for (i <- 0 until 100 ) {
 
@@ -24,15 +27,29 @@ class MACUnitTester (c:MAC) extends PeekPokeTester(c) {
         val out_e = testw 
         val out_s = (testw * testwgt)  + testn 
 
-        poke(c.io.west, testw)
-        poke(c.io.north, testn)
-        poke(c.io.weight, testwgt)
+        poke(c.io.weight_input.valid, true)
+        poke(c.io.weight_input.bits, testwgt)
+
+        step(1)
+
+        expect(c.io.weight_input.ready, false)
+
+        poke(c.io.west.bits, testw)
+        poke(c.io.north.bits, testn)
+        poke(c.io.west.valid, true)
+        poke(c.io.north.valid, true)
         
         step(1)
 
-        expect(c.io.east, out_e)
-        expect(c.io.south, out_s)
+        // I've consumed my inputs
+        expect(c.io.west.ready, false)
+        expect(c.io.north.ready, false)
 
+        // I've produced outputs, and they're 'valid' to be consumed
+        expect(c.io.east.valid, true)
+        expect(c.io.east.bits, out_e)
+        expect(c.io.south.valid, true)
+        expect(c.io.south.bits, out_s)
     }
 
 }
