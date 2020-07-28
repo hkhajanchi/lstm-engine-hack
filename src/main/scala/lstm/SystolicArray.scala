@@ -50,21 +50,25 @@ class SystolicArray (val rows:Int, val cols: Int, val vec_len : Int, val bw: Int
       // wire up west <-> east ports
       for (i <- 0 until rows) {
         for (j <- 1 until cols) {
-          pes(i)(j).io.west <> pes(i)(j - 1).io.east
+          pes(i)(j).io.west.bits := pes(i)(j - 1).io.east.bits
+          pes(i)(j).io.west.valid := pes(i)(j - 1).io.east.valid
+          //pes(i)(j).io.west.ready := pes(i)(j - 1).io.east.ready
         }
       }
 
       // wire up north <-> south ports
       for (i <- 1 until rows) {
         for (j <- 0 until cols) {
-          pes(i)(j).io.north <> pes(i-1)(j).io.south
+          pes(i)(j).io.north.bits := pes(i-1)(j).io.south.bits
+          pes(i)(j).io.north.valid := pes(i-1)(j).io.south.valid
+          //pes(i)(j).io.north.ready := pes(i-1)(j).io.south.ready
         }
       }
 
       for (i <- 0 until cols) { 
         when (pes(rows-1)(i).io.south.valid) {
           io.vec_out(i) := pes(rows-1)(i).io.south.bits
-          pes(rows-1)(i).io.south.ready := false.B
+          //pes(rows-1)(i).io.south.ready := false.B
         }
       }
     }

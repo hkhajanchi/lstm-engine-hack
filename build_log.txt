@@ -1,0 +1,19 @@
+sbt 'testOnly lstm.MACTester'
+[info] Loading settings for project hack-build from plugins.sbt ...
+[info] Loading project definition from /hack/project
+[info] Loading settings for project hack from build.sbt ...
+[info] Set current project to lstm-arch (in build file:/hack/)
+[info] Compiling 1 Scala source to /hack/target/scala-2.12/classes ...
+[error] /hack/src/main/scala/lstm/MAC.scala:73:24: type mismatch;
+[error]  found   : Boolean(true)
+[error]  required: chisel3.Data
+[error]       io.east.valid := true
+[error]                        ^
+[error] /hack/src/main/scala/lstm/MAC.scala:74:25: type mismatch;
+[error]  found   : Boolean(true)
+[error]  required: chisel3.Data
+[error]       io.south.valid := true 
+[error]                         ^
+[error] two errors found
+[error] (Compile / compileIncremental) Compilation failed
+[error] Total time: 1 s, completed Jul 28, 2020, 8:37:07 PM

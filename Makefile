@@ -43,6 +43,11 @@ test-frontendrom:
 test-mac:
 	$(BUILDER) 'testOnly lstm.MACTester'
 
+test-systolic: 
+	$(BUILDER) 'testOnly lstm.SystolicArrayTester'
+
+wave-mac:
+	$(WAVE) test/vcd/MAC.vcd
 wave-relu:
 	$(WAVE) test_run_dir/make_a_vcd/ReLu.vcd
 
