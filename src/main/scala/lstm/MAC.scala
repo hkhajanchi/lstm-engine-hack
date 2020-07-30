@@ -32,7 +32,7 @@ class MAC(val a:Int, val b:Int, val c:Int) extends Module {
    
 
     val weight = RegInit(0.S(c.W)) 
-    val east_reg = RegInit(0.S(a.W)) 
+    val west_reg = RegInit(0.S(a.W)) 
     val north_reg = RegInit(0.S(b.W)) 
     val mac_buf = RegInit(0.S ((c*2).W)) 
 
@@ -66,7 +66,7 @@ class MAC(val a:Int, val b:Int, val c:Int) extends Module {
       io.west.ready := false.B
       io.north.ready := false.B
 
-      east_reg := io.west.bits
+      west_reg := io.west.bits
       north_reg := io.north.bits 
     }
     
@@ -75,7 +75,7 @@ class MAC(val a:Int, val b:Int, val c:Int) extends Module {
 
       // Latch the multiplication - available after clk 1
 
-      mac_buf := (east_reg * weight) + north_reg 
+      mac_buf := (west_reg * weight) + north_reg 
       
       comp_done := true.B
       busy := false.B
@@ -84,7 +84,7 @@ class MAC(val a:Int, val b:Int, val c:Int) extends Module {
    // Physical computation is done, now we need to assert the proper "valid" signals
    //
 // this should be a continous assignment 
-   io.east.bits := east_reg 
+   io.east.bits := west_reg 
    io.south.bits := mac_buf
 
   when (!busy && comp_done) {

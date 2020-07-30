@@ -46,6 +46,9 @@ test-mac:
 test-systolic: 
 	$(BUILDER) 'testOnly lstm.SystolicArrayTester'
 
+test-systolicN:
+	$(BUILDER) 'testOnly lstm.SystolicArrayNewTester'
+
 wave-mac:
 	$(WAVE) test/vcd/MAC.vcd
 wave-relu:
