@@ -39,6 +39,21 @@ class SystolicArrayNew (val rows:Int, val cols:Int, val vec_len:Int, val bw:Int)
     mac.io.south.ready := false.B
   }
 
+  def connectMACs_ew (mac_0:MAC, mac_1:MAC) : Unit = 
+  {
+    // This function wires up two MACs together in the west to east fashion
+    mac_1.io.west.valid := mac_0.io.east.valid 
+    mac_1.io.west.bits := mac_0.io.east.bits
+  } 
+  
+  def connectMACs_ns (mac_0:MAC, mac_1:MAC) : Unit = 
+  {
+    // Connects the north & south ports of two MAC units 
+    
+    mac_1.io.north.valid := mac_0.io.south.valid 
+    mac_1.io.north.bits := mac_0.io.south.bits 
+  } 
+
 // -------------------------------------------
 
 
@@ -49,7 +64,8 @@ class SystolicArrayNew (val rows:Int, val cols:Int, val vec_len:Int, val bw:Int)
         val vec_out = Output(Vec(vec_len, SInt(bw.W))) // output of the array
         val weights = Input(Vec(rows, Vec(cols, SInt(bw.W))))
 
-        val compute_enable = Input(Bool()) 
+        val compute_enable = Input(Bool())
+        val output_valid = Output(Bool())
         val weights_are_loaded = Output(Bool())
         val fake_output = Output(SInt(bw.W))
     })
@@ -64,13 +80,44 @@ class SystolicArrayNew (val rows:Int, val cols:Int, val vec_len:Int, val bw:Int)
 
 
 
-    /* Initialize all signals of the MAC units */ 
-      pes.map(_.map(initializeMac)) 
+
+ /* --------- Initialize all signals and wire up stuff  */
+
+      pes.map(_.map(initializeMac)) //initializes all MAC signals
+
       (io.vec_out, output_buf).zipped.map( _ := _ ) 
 
       
-    io.weights_are_loaded := weights_loaded
+      io.weights_are_loaded := weights_loaded
 
+      // Wire up west <> east ports 
+
+      for (i <- 0 until rows) {
+        for (j <- 0 until cols) {
+
+          pes(i)(j).io.west.bits := pes(i)(j-1).io.east.bits 
+          pes(i)(j).io.west.valid := pes(i)(j-1).io.east.valid 
+        } 
+      } 
+
+      // wire up north <> south ports 
+      
+      for (i <- 0 until rows) {
+        for (j <- 0 until cols) {
+
+          pes(i)(j).io.north.bits := pes(i-1)(j).io.south.bits 
+          pes(i)(j).io.north.valid := pes(i-1)(j).io.south.valid 
+        } 
+      }
+
+ // wire up systolic array to output registers
+   for (i <- 0 until vec_len) {
+     vec_out(i) := output_buf(i) 
+   } 
+     
+
+
+/* ------------- Computation Logic ----------- */ 
 
     // Execute Process 1 - Load Weights
 
@@ -92,38 +139,42 @@ class SystolicArrayNew (val rows:Int, val cols:Int, val vec_len:Int, val bw:Int)
 
     
      
-    // Now that weights are loaded, we can do some computation
+ // Do computation
+  
+ val comp_done := RegInit(false.B) 
 
-  when (weights_loaded) 
+  when (weights_loaded && comp_enable) 
   {
+    
+    // Feed the north vector into the top row 
+    
+    for (i <= 0 until vec_len) {
+      pes(0)(i).io.north.bits := io.vec_b(i) 
+      pes(0)(i).io.north.valid := true.B 
+    } 
 
-    pes(0)(0).io.north.valid := true.B
-    pes(0)(0).io.west.valid := true.B
-    pes(0)(0).io.north.bits := 1.S(bw.W) 
-    pes(0)(0).io.west.bits := 1.S(bw.W) 
+
+    // Feed the west vector into the first column
+    for (i <- 0 until vec_len) {
+      pes(i)(0).io.west.bits := io.vec_x(i)
+      pes(i)(0).io.west.valid := true.B
+    } 
+
+  // make sure the last row is completely valid
+  comp_done :=  pes(rows).reduceLeft( _.io.south.valid && _.io.south.valid)  
 
   } 
 
-  io.fake_output := pes(0)(0).io.south.bits
+ // Latch outputs   
 
+ when (comp_done) {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
+   for (i <- 0 until vec_len) 
+    {
+      output_buf(i) := pes(rows)(i).south.bits 
+      comp_done := false.B 
+    } 
+ } 
 
 
 
