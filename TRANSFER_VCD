@@ -1,4 +1,0 @@
-cat foo.vcd | nc termbin.com 9999 <--- from jebe
-(produces URL (<output>))
-
-curl -fL https://termbin.com/<output>  > foo.vcd <--- from your machine
