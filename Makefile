@@ -57,8 +57,8 @@ test-systolicN:
 test-foo:
 	$(BUILDER) 'testOnly lstm.fooTester' 
 
-test-mac-atomic:
-	$(BUILDER) 'testOnly lstm.MACAtomicTester'
+test-atomicMAC:
+	$(BUILDER) 'testOnly lstm.AtomicMACTester'
 
 wave-mac:
 	$(WAVE) test/vcd/MAC.vcd

@@ -7,7 +7,7 @@ import chisel3.stage.ChiselStage
 /* testbench template for chisel designs 
  * override "MACAtomic" with your specific module name, gonna write a python script to automate that */ 
 
-class MACAtomicUnitTester (c:MACAtomic) extends PeekPokeTester(c) {
+class AtomicMACUnitTester (c:AtomicMAC) extends PeekPokeTester(c) {
 
   poke(c.io.west,   10)
   poke(c.io.north,  10)
@@ -23,14 +23,14 @@ class MACAtomicUnitTester (c:MACAtomic) extends PeekPokeTester(c) {
 
 
 
-class MACAtomicTester extends ChiselFlatSpec {
+class AtomicMACTester extends ChiselFlatSpec {
 
   val args = Array[String]("--is-verbose","--generate-vcd-output","on","--target-dir","test/vcd/MACAtomic","--backend-name","verilator","--top-name","vcd") 
 
   "module" should "do something" in {
-    iotesters.Driver.execute(args, () => new MACAtomic(16,16,16)) 
+    iotesters.Driver.execute(args, () => new AtomicMAC(16,16,16)) 
     {
-      c => new MACAtomicUnitTester(c) 
+      c => new AtomicMACUnitTester(c) 
     } should be(true) } 
 } 
 
