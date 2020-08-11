@@ -2,6 +2,10 @@ BUILDER:=sbt
 WAVE:=gtkwave
 PYTHON:=python3
 
+new-module: 
+	python3 build_module.py -n $(MOD) -d $(MOD).scala
+	python3 build_tb.py -n $(MOD) -d $(MOD)Tester.scala
+	
 test: test-pointmult \
 	  test-pointadd \
 	  test-relu \
