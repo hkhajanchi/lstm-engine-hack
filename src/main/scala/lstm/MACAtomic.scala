@@ -2,7 +2,7 @@ package lstm
 
 import chisel3._ 
 
-class MACIo (val a:Int, b:Int, c:Int) extends Bundle {
+class MACAtomicIo (val a:Int, b:Int, c:Int) extends Bundle {
   val west   = Input(SInt(a.W))
   val north  = Input(SInt(b.W))
   val weight = Input(SInt(c.W))
@@ -11,7 +11,7 @@ class MACIo (val a:Int, b:Int, c:Int) extends Bundle {
   val south  = Output(SInt(c.W))
 } 
 
-class MACBase (val bw_0:Int, val bw_1:Int, val bw_2:Int) extends Module {
+class MACAtomic (val bw_0:Int, val bw_1:Int, val bw_2:Int) extends Module {
 
     /* A baseline implementation of a combinational MAC unit 
      * @param bw_0 <Int> : bitwidth of operand x 
@@ -23,13 +23,13 @@ class MACBase (val bw_0:Int, val bw_1:Int, val bw_2:Int) extends Module {
 
     
     /* IO instantiation here */ 
-    val io = IO(new MACIo(bw_0, bw_1, bw_2)) 
+    val io = IO(new MACAtomicIo(bw_0, bw_1, bw_2)) 
     
     /* Class methods */ 
    def compute (w:SInt, x:SInt, b:SInt) : SInt = w*x + b 
 
 
-   io.east := west
+   io.east := io.west
    io.south := compute(io.weight, io.east, io.north) 
 
 

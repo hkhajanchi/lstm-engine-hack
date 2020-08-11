@@ -1,6 +1,9 @@
 package lstm 
+import chisel3._ 
+import chisel3.iotesters
 import chisel3.iotesters.{PeekPokeTester, Driver, ChiselFlatSpec} 
 import chisel3.stage.ChiselStage
+
 
 /* testbench template for chisel designs 
  * override "<<>>" with your specific module name, gonna write a python script to automate that */ 
@@ -12,10 +15,10 @@ class <<>>UnitTester (c:<<>>) extends PeekPokeTester(c) {
 
 class <<>>Tester extends ChiselFlatSpec {
 
-  val args = Array[String]("--is-verbose","-generate-vcd-output","on","--target-dir","test/vcd/<<>>","--backend-name","verilator","--top-name","vcd") 
+  val args = Array[String]("--is-verbose","--generate-vcd-output","on","--target-dir","test/vcd/<<>>","--backend-name","verilator","--top-name","vcd") 
 
   "module" should "do something" in {
-    iotesters.Driver.execute(args, () => new <<>>(/* module params here */) 
+    iotesters.Driver.execute(args, () => new <<>>(/* module params here */)) 
     {
       c => new <<>>UnitTester(c) 
     } should be(true) } 

@@ -1,0 +1,81 @@
+sbt 'testOnly lstm.MACAtomicTester'
+[info] Loading settings for project hack-build from plugins.sbt ...
+[info] Loading project definition from /hack/project
+[info] Loading settings for project hack from build.sbt ...
+[info] Set current project to lstm-arch (in build file:/hack/)
+[info] Compiling 2 Scala sources to /hack/target/scala-2.12/test-classes ...
+[error] /hack/src/test/scala/lstm/MACAtomicTester.scala:8:30: not found: type MACAtomic
+[error] class MACAtomicUnitTester (c:MACAtomic) extends PeekPokeTester(c) {
+[error]                              ^
+[error] /hack/src/test/scala/lstm/MACAtomicTester.scala:8:64: no arguments allowed for nullary constructor Object: ()Object
+[error] class MACAtomicUnitTester (c:MACAtomic) extends PeekPokeTester(c) {
+[error]                                                                ^
+[error] /hack/src/test/scala/lstm/MACAtomicTester.scala:10:3: not found: value poke
+[error]   poke(c.io.west,   10)
+[error]   ^
+[error] /hack/src/test/scala/lstm/MACAtomicTester.scala:11:3: not found: value poke
+[error]   poke(c.io.north,  10)
+[error]   ^
+[error] /hack/src/test/scala/lstm/MACAtomicTester.scala:12:3: not found: value poke
+[error]   poke(c.io.weight, 10) 
+[error]   ^
+[error] /hack/src/test/scala/lstm/MACAtomicTester.scala:14:3: not found: value step
+[error]   step(1) 
+[error]   ^
+[error] /hack/src/test/scala/lstm/MACAtomicTester.scala:16:3: not found: value expect
+[error]   expect(c.io.east, 10)
+[error]   ^
+[error] /hack/src/test/scala/lstm/MACAtomicTester.scala:17:3: not found: value expect
+[error]   expect(c.io.south, 110) 
+[error]   ^
+[error] /hack/src/test/scala/lstm/MACAtomicTester.scala:29:5: not found: value iotesters
+[error]     iotesters.Driver.execute(args, () => new MACAtomic(16,16,16)) 
+[error]     ^
+[error] /hack/src/test/scala/lstm/MACAtomicTester.scala:29:46: not found: type MACAtomic
+[error]     iotesters.Driver.execute(args, () => new MACAtomic(16,16,16)) 
+[error]                                              ^
+[error] /hack/src/test/scala/lstm/foo_test.scala:11:25: not found: type foo
+[error] class fooUnitTester (c: foo) extends PeekPokeTester(c) {
+[error]                         ^
+[error] /hack/src/test/scala/lstm/foo_test.scala:11:53: no arguments allowed for nullary constructor Object: ()Object
+[error] class fooUnitTester (c: foo) extends PeekPokeTester(c) {
+[error]                                                     ^
+[error] /hack/src/test/scala/lstm/foo_test.scala:13:46: not found: type foo
+[error]   println( (new ChiselStage).emitVerilog(new foo) ) 
+[error]                                              ^
+[error] /hack/src/test/scala/lstm/foo_test.scala:14:3: not found: value poke
+[error]   poke(c.io.internal_0, true) 
+[error]   ^
+[error] /hack/src/test/scala/lstm/foo_test.scala:15:3: not found: value step
+[error]   step(1)
+[error]   ^
+[error] /hack/src/test/scala/lstm/foo_test.scala:16:3: not found: value poke
+[error]   poke(c.io.internal_0, false) 
+[error]   ^
+[error] /hack/src/test/scala/lstm/foo_test.scala:17:3: not found: value step
+[error]   step(3) 
+[error]   ^
+[error] /hack/src/test/scala/lstm/foo_test.scala:20:3: not found: value poke
+[error]   poke(c.io.external_0, true) 
+[error]   ^
+[error] /hack/src/test/scala/lstm/foo_test.scala:21:3: not found: value step
+[error]   step(1)
+[error]   ^
+[error] /hack/src/test/scala/lstm/foo_test.scala:22:3: not found: value poke
+[error]   poke(c.io.external_1, true) 
+[error]   ^
+[error] /hack/src/test/scala/lstm/foo_test.scala:24:3: not found: value step
+[error]   step(1) 
+[error]   ^
+[error] /hack/src/test/scala/lstm/foo_test.scala:25:3: not found: value expect
+[error]   expect(c.io.result, true) 
+[error]   ^
+[error] /hack/src/test/scala/lstm/foo_test.scala:26:3: not found: value expect
+[error]   expect(c.io.result_two, true) 
+[error]   ^
+[error] /hack/src/test/scala/lstm/foo_test.scala:36:151: not found: type foo
+[error]   iotesters.Driver.execute(Array[String]("--is-verbose", "--generate-vcd-output", "on", "--target-dir", "test/vcd/foo","--top-name","vcd"), () => new foo ) 
+[error]                                                                                                                                                       ^
+[error] 24 errors found
+[error] (Test / compileIncremental) Compilation failed
+[error] Total time: 2 s, completed Aug 11, 2020, 11:46:55 AM
