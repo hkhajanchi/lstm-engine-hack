@@ -12,12 +12,12 @@ class MACUnitTester (c:MAC) extends PeekPokeTester(c) {
     /* Create random signed integers using Scala's nextInt() generator 
     range: -(2^(bitwitdth-1)) to 2^(bitwidth) where a,b,c are the respective operand bitwidths */
 
-    def createRandInt(width:Int) : Int = rnd.nextInt(1<<width) - (1<<(width-1))
+    def createRandInt(width:Int) : Int = rnd.nextInt(1<<width) 
     
    // println((new ChiselStage).emitVerilog(new MAC(16,16,16)))
    
 
-    val testwgt = createRandInt(c.c) //wgt should be static for all n&w iterations
+    val testwgt = createRandInt(8) //wgt should be static for all n&w iterations
 
         poke(c.io.weight_input.valid, true)
         poke(c.io.weight_input.bits, testwgt)
@@ -31,8 +31,8 @@ class MACUnitTester (c:MAC) extends PeekPokeTester(c) {
     for (i <- 0 until 100 ) {
 
  
-        val testn   = createRandInt(c.b)
-        val testw   = createRandInt(c.a)
+        val testn   = createRandInt(8)
+        val testw   = createRandInt(8)
 
         /* Expected MAC values */ 
         val out_e = testw 
@@ -56,10 +56,10 @@ class MACUnitTester (c:MAC) extends PeekPokeTester(c) {
 // I've driven the n/w inputs, now it's time to compute the MAC 
 
 
-        // I'm ready to get the outputs
-       // poke(c.io.south.ready, true) 
-       // poke(c.io.east.ready, true) 
-        //step(1) 
+      // I'm ready to get the outputs
+     // poke(c.io.south.ready, true) 
+     // poke(c.io.east.ready, true) 
+      //step(1) 
 
         // I've produced outputs, and they're 'valid' to be consumed
         expect(c.io.east.valid, true)
@@ -88,7 +88,7 @@ class MACTester extends ChiselFlatSpec {
     // def createrandMac : T = {
     //     val x = new MacParam(16,16,16)
     // }
-    iotesters.Driver.execute(Array[String]("--is-verbose", "--generate-vcd-output","on","--target-dir","test/vcd","--top-name","vcd"),() => new MAC(16,16,16))
+    iotesters.Driver.execute(Array[String]("--is-verbose", "--generate-vcd-output","on","--target-dir","test/vcd/mac","--top-name","vcd", "--backend-name", "verilator"),() => new MAC(16,16,16))
     {
         c => new MACUnitTester(c)
     } should be(true) }

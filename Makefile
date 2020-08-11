@@ -47,11 +47,18 @@ test-systolic:
 	$(BUILDER) 'testOnly lstm.SystolicArrayTester'
 
 test-systolicN:
+	cd test/vcd/systolic_test/ && rm -rf *
 	$(BUILDER) 'testOnly lstm.SystolicArrayNewTester'
+
 test-foo:
 	$(BUILDER) 'testOnly lstm.fooTester' 
+
 wave-mac:
 	$(WAVE) test/vcd/MAC.vcd
+
+wave-systolic:
+	cd test/vcd/systolic_test/* && $(WAVE) SystolicArrayNew.vcd
+
 wave-relu:
 	$(WAVE) test_run_dir/make_a_vcd/ReLu.vcd
 

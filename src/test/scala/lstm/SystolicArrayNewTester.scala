@@ -1,4 +1,3 @@
-
 package lstm
 
 
@@ -22,7 +21,7 @@ class SystolicArrayNewUnitTester (c:SystolicArrayNew) extends PeekPokeTester(c) 
  val test_w = Array.fill(c.vec_len){createRandInt(8)} 
  
  val test_wgts = Array.ofDim[Int](c.vec_len, c.vec_len)
- test_wgts.map ( e => e.map( _+createRandInt(8) )) // overflow issues
+ test_wgts.map ( e => e.map( _ + createRandInt(8) )) // overflow issues
 
 
 
@@ -46,8 +45,13 @@ class SystolicArrayNewUnitTester (c:SystolicArrayNew) extends PeekPokeTester(c) 
 
   }
 
-  poke(c.io.compute_enable, true) 
-  step(100)  
+  // Pulse compute enable
+  poke(c.io.compute_enable, true)
+  
+  // Run 100 cycles, no clue what the actual latency is 
+  step(100)
+
+  expect(c.io.output_valid, true) 
 
 
   /* peek all the outputs */ 
