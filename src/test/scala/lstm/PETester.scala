@@ -12,11 +12,11 @@ class PEUnitTester (c:PE) extends PeekPokeTester(c) {
 
   // buffer for longer waveforms 
   step(3) 
-  poke(c.io.weight_enable, true) 
+  poke(c.io.weight_load_enable, true) 
   poke(c.io.weight, 10) 
 
   step(1) 
-  poke(c.io.weight_enable, false) 
+  poke(c.io.weight_load_enable, false) 
   
   // weight should be locked in now 
   step(1)
@@ -24,12 +24,19 @@ class PEUnitTester (c:PE) extends PeekPokeTester(c) {
   poke(c.io.north, 10) 
   expect(c.io.east, 10)
   expect(c.io.south, 110) 
+  
+  //poke(c.io.west,0)
+  //poke(c.io.north,0)
 
+  //outputs should be 0 now, but what happens if we change the weights?  
+  poke(c.io.weight_load_enable, true) 
+  poke(c.io.weight, 50) 
 
-  //outputs should be 0 now 
   step(1)
-  expect(c.io.south, 0) 
-  expect(c.io.east, 0) 
+  expect(c.io.south, 510) 
+  expect(c.io.east, 10) 
+  
+  step(5)
 
 }
 

@@ -17,19 +17,23 @@ class PE (val a:Int, b:Int, c:Int) extends Module {
 
    val io = IO(new PEIO(a,b,c)) 
    val weight_FF = RegInit(0.S(c.W)) 
-
+   
    /* save weight when weight_load_enable == 1 */ 
-  when (weight_load_enable) weight_FF := io.weight
-  .otherwise weight_FF := weight_FF 
-
+  when (io.weight_load_enable) {weight_FF := io.weight}
+  .otherwise {weight_FF := weight_FF} 
+  
 
   val mac = Module(new AtomicMAC(a,b,c))
-  
+
+ /* Save the MAC outputs into registers for PE pipelining */ 
+  val east_FF  = RegNext(mac.io.east) 
+  val south_FF = RegNext(mac.io.south) 
+
   mac.io.west   := io.west 
   mac.io.north  := io.north
   mac.io.weight := weight_FF
-  io.east       := mac.io.east
-  io.south      := mac.io.south
+  io.east       := east_FF
+  io.south      := south_FF 
   
  
 

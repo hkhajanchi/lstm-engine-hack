@@ -3,9 +3,7 @@ WAVE:=gtkwave
 PYTHON:=python3
 
 new-module: 
-	python3 build_module.py -n $(MOD) -d $(MOD).scala
-	python3 build_tb.py -n $(MOD) -d $(MOD)Tester.scala
-	
+	$(PYTHON) build_skeleton.py -n $(MOD)	
 test: test-pointmult \
 	  test-pointadd \
 	  test-relu \
@@ -54,9 +52,6 @@ test-systolicN:
 	cd test/vcd/systolic_test/ && rm -rf *
 	$(BUILDER) 'testOnly lstm.SystolicArrayNewTester'
 
-test-foo:
-	$(BUILDER) 'testOnly lstm.fooTester' 
-
 test-atomicMAC:
 	$(BUILDER) 'testOnly lstm.AtomicMACTester'
 
@@ -92,3 +87,7 @@ wave-vectorreverse:
 
 clean:
 	rm -rf mem*.txt target test_run_dir
+test-PE:
+	$(BUILDER) 'testOnly lstm.PETester'
+test-SysArrayPipeline:
+	$(BUILDER) 'sbt testOnly lstm.SysArrayPipelineTester'

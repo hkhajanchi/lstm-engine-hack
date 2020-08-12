@@ -1,7 +1,33 @@
-# IIT LSTM Engine
-TODO
+IIT LSTM Engine
 
-## License
+# Building Source Files and Testbenches
+Use the Python utility for automatically creating source file and testbench skeletons in the respective '/src/main' and '/src/test' directories. 
+These files have the Chisel boilerplate already set up, so all you need to do is add your logic and simulate. 
+
+To use, call 'make new-module MOD=*your module name*'. You should use one word module names, such as *foo* or *fooPipelined*, etc. 
+
+The utility will create a file called '*your-module-name*.scala' in '/src/main/..' and '*your-module-name*Tester.scala' in 'src/test/..'
+Additionally, the 'Makefile' in the base will get updated to include a simulation command. To simulate, call 
+'make test-*your-module-name*' 
+
+
+# Running Simulations
+
+## Docker Setup
+Simulations are run in a Docker container. Build the docker image using the specified Dockerfile, and run 
+'./start\_docker.sh' to build a container that has the LSTM source tree mounted. 
+
+Within the docker container, you can run different 'make' commands to simulate different modules. 
+
+## Viewing Waveforms
+To view waveforms for the design, you need to ensure that '--generate-vcd-output' is enabled in your Chisel3 testbench. 
+(If you're using the Python utility for creating source files & testbenches, this is enabled by default) 
+
+After simulation is completed, navigate to '/test/vcd/*your-module-name*' and run 'gtkwave *your-module-name*.vcd'. 
+Note that this must be done within a Bash shell outside of Docker, and GTKWave must already be installed. 
+GTKWave is GUI-based, so X-forwarding must be enabled if you're running this on a server. 
+
+# License
 This is free and unencumbered software released into the public domain.
 
 Anyone is free to copy, modify, publish, use, compile, sell, or
